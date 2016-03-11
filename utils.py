@@ -38,3 +38,9 @@ def pascal_palette_invert():
 
 def pascal_mean_values():
   return np.array([103.939, 116.779, 123.68], dtype=np.float32)
+
+def strstr(str1, str2):
+  if str1.find(str2) != -1:
+    return True
+  else:
+    return False
