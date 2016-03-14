@@ -17,7 +17,7 @@ from utils import pascal_palette_invert, pascal_mean_values
 from segmenter import Segmenter
 
 def main():
-  gpu_id = 2
+  gpu_id = 0
   net_path, model_path, img_path = process_arguments(sys.argv)
 
   palette = pascal_palette_invert()
@@ -27,8 +27,8 @@ def main():
   segm_result = net.predict([img])
   segm_post = postprocess_segmentation(segm_result, cur_h, cur_w, palette)
   
-  plt.imshow(segm_post)
-  plt.savefig('label.png')
+  concatenate = True
+  save_result(segm_post, 'label.png', concatenate, img_path)
 
 def preprocess_image(img_path):
   if not os.path.exists(img_path):
@@ -72,6 +72,20 @@ def process_arguments(argv):
     help()
 
   return net_path, model_path, img_path
+
+def save_result(output_img, img_name, concatenate, input_img):
+  if concatenate == False:
+    output_img.save(img_name)
+  else:
+    input_img = PILImage.open(input_img)
+    w = input_img.size[0] + output_img.size[0]
+    h = input_img.size[1]
+
+    concatate_img = PILImage.new("RGB", (w, h))
+    concatate_img.paste(input_img, (0, 0))
+    concatate_img.paste(output_img, (input_img.size[0], 0))
+
+    concatate_img.save(img_name)
 
 def help():
   print('Usage: python deeplab.py NET MODEL IMAGE\n'
