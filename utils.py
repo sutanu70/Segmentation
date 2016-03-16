@@ -2,6 +2,8 @@
 # Martin Kersner, m.kersner@gmail.com
 # 2016/03/11
 
+import scipy.io
+
 def pascal_palette():
   palette = {(  0,   0,   0) : 0 ,
              (128,   0,   0) : 1 ,
@@ -44,3 +46,10 @@ def strstr(str1, str2):
     return True
   else:
     return False
+
+# Mat to png conversion for http://www.cs.berkeley.edu/~bharath2/codes/SBD/download.html
+# 'GTcls' key is for class segmentation
+# 'GTinst' key is for instance segmentation
+def mat2png_hariharan(mat_file, key='GTcls'):
+  mat = scipy.io.loadmat(mat_file, mat_dtype=True, squeeze_me=True, struct_as_record=False)
+  return mat[key].Segmentation
