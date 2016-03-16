@@ -3,6 +3,8 @@
 # 2016/03/11
 
 import scipy.io
+import struct
+import numpy as np
 
 def pascal_palette():
   palette = {(  0,   0,   0) : 0 ,
@@ -53,3 +55,18 @@ def strstr(str1, str2):
 def mat2png_hariharan(mat_file, key='GTcls'):
   mat = scipy.io.loadmat(mat_file, mat_dtype=True, squeeze_me=True, struct_as_record=False)
   return mat[key].Segmentation
+
+# Python version of script in code/densecrf/my_script/LoadBinFile.m
+def load_binary_segmentation(bin_file, dtype='int16'):
+  with open(bin_file, 'rb') as bf:
+    rows = struct.unpack('i', bf.read(4))[0]
+    cols = struct.unpack('i', bf.read(4))[0]
+    channels = struct.unpack('i', bf.read(4))[0]
+
+    num_values = rows * cols # expect only one channel in segmentation output
+    out = np.zeros(num_values, dtype=np.uint8) # expect only values between 0 and 255
+
+    for i in range(num_values):
+      out[i] = np.uint8(struct.unpack('h', bf.read(2))[0])
+
+    return out.reshape((rows, cols))
