@@ -35,7 +35,7 @@ def process_arguments(argv):
 
 def convert_mat2png(mat_files, output_path):
   if not mat_files:
-    help('Output directory does not contain any Matlab files!\n')
+    help('Input directory does not contain any Matlab files!\n')
 
   for mat in mat_files:
     numpy_img = mat2png_hariharan(mat)
