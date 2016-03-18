@@ -6,6 +6,13 @@ import scipy.io
 import struct
 import numpy as np
 
+def pascal_classes():
+  classes = {'aeroplane' : 1,  'bicycle'   : 2,  'bird'        : 3,  'boat'         : 4,
+             'bottle'    : 5,  'bus'       : 6,  'car'         : 7,  'cat'          : 8,
+             'chair'     : 9,  'cow'       : 10, 'diningtable' : 11, 'dog'          : 12,
+             'horse'     : 13, 'motorbike' : 14, 'person'      : 15, 'potted-plant' : 16,
+             'sheep'     : 17, 'sofa'      : 18, 'train'       : 19, 'tv/monitor'   : 20}
+
 def pascal_palette():
   palette = {(  0,   0,   0) : 0 ,
              (128,   0,   0) : 1 ,
@@ -82,3 +89,20 @@ def convert_from_color_segmentation(arr_3d):
       arr_2d[i, j] = palette.get(key, 0) # default value if key was not found is 0
 
   return arr_2d
+
+def create_lut(class_ids, max_id=256):
+  # Index 0 is the first index used in caffe for denoting labels.
+  # Therefore, index 0 is considered as default.
+  lut = np.zeros(max_id, dtype=np.uint8)
+
+  new_index = 1
+  for i in class_ids:
+    lut[i] = new_index
+    new_index += 1
+
+  return lut
+
+def get_id_classes(classes):
+  all_classes = pascal_classes()
+  id_classes = [all_classes[c] for c in classes]
+  return id_classes
