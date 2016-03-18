@@ -2,7 +2,6 @@
 # Martin Kersner, m.kersner@gmail.com
 # 2016/03/10
 
-# DeepLab-LargeFOV
 NET_ID=DeepLab-LargeFOV 
 INIT_PATH=init
 MODEL_PATH=exper/voc12/model/${NET_ID}
@@ -29,5 +28,6 @@ ln -s ../../../../${INIT_PATH}/vgg16_20M.caffemodel init.caffemodel
 cd ../../config/${NET_ID}
 ln -s ../../../../${NET_ID}/solver.prototxt solver.prototxt
 ln -s ../../../../${NET_ID}/train.prototxt train.prototxt
+ln -s ../../../../${NET_ID}/test.prototxt test.prototxt
 
 cd ../../../../
