@@ -27,6 +27,7 @@ ln -s ../../../../${INIT_PATH}/vgg16_20M.caffemodel init.caffemodel
 
 cd ../../config/${NET_ID}
 ln -s ../../../../${NET_ID}/solver.prototxt solver.prototxt
+ln -s ../../../../${NET_ID}/solver2.prototxt solver2.prototxt
 ln -s ../../../../${NET_ID}/train.prototxt train.prototxt
 ln -s ../../../../${NET_ID}/test.prototxt test.prototxt
 
