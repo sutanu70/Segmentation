@@ -20,7 +20,9 @@ if [ $# -eq 2 ]; then
     NUM_JPG_FILES=`ls $INPUT_PATH/*.jpg | wc -l`
 
     if [ $NUM_JPG_FILES -gt 0 ]; then
-      mogrify -format ppm -path $OUTPUT_PATH $INPUT_PATH/*.jpg
+      # comment option clears any added comment to PPM image
+      # if any comment was present DenseCRF crashed while reading such PPM image 
+      mogrify -format ppm +comment -comment "" -path $OUTPUT_PATH $INPUT_PATH/*.jpg
     else
       help "Intput directory does not contain any JPG files!"
     fi
