@@ -2,7 +2,7 @@
 
 Martin Kersner, <m.kersner@gmail.com>
 
-This repository contains scripts for training [DeepLab for Semantic Image Segmentation](https://bitbucket.org/deeplab/deeplab-public). 
+This repository contains scripts for training [DeepLab for Semantic Image Segmentation](https://bitbucket.org/deeplab/deeplab-public) using strongly annotated data.
 
 ```bash
 git clone --recursive https://github.com/martinkersner/train-DeepLab.git 
