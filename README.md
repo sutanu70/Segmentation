@@ -11,6 +11,7 @@ git clone --recursive https://github.com/martinkersner/train-DeepLab.git
 In following tutorial we use couple of shell variables in order to reproduce the same results without any obtacles.
 * *$DEEPLAB* denotes the main directory where repository is checked out
 * *$DATASETS* denotes path to directory where all necessary datasets are stored
+* *$LOGNAME* denotes name of log file stored in *$DEEPLAB/exper/voc12/log* directory
 
 ## Prerequisites
 * [matio](http://sourceforge.net/projects/matio/files/matio/1.5.2/)
@@ -30,7 +31,7 @@ make runtest # NOT mandatory
 ```
 
 ### Compile DenseCRF
-Go to *$DEEPLAB/code/densecrf* directory, modify Makefile if necessary and run *make* command.
+Go to *$DEEPLAB/code/densecrf* directory, modify *Makefile* if necessary and run *make* command.
 Or you can run following commands in sequential order.
 
 ```bash
@@ -78,7 +79,7 @@ cd $DEEPLAB
   $DATASETS/VOC2012_orig/SegmentationClass_1D/
 ```
 
-At last, part of code which computes DenseCRF is able to work only with *PPM* image files, hence we have to perform another conversion.
+At last, part of code which computes DenseCRF is able to work only with PPM image files, hence we have to perform another conversion.
 
 ```bash
 cd $DEEPLAB
@@ -117,14 +118,28 @@ Before the first training we have to download several files. Using the command b
 ./get_DeepLab_LargeFOV_voc12_data.sh
 ```
 
-Image list have to be modified appropriately.
+In order to easily switch between datasets we will modify image lists appropriately.
+
 ```bash
 ./prepare_voc12_data_lists.sh
 ```
 
-And then training can start.
+Finally, we can start training.
+
 ```bash
 ./run_pascal.sh
+```
+
+Training script generates information which are printed to terminal and also stored in *$DEEPLAB/exper/voc12/log* directory.
+For every printed iteration there are displayed loss and three different model evalutation metrics for currently employed batch.
+They denote pixel accuracy, average recall and average Jacard index, respectively.
+Even though those values are retrievd from training data, they possess important information about training and using the script below we can plot them as a graph.
+The script generates two graphs *evaluation.png* and *loss.png*.
+
+```bash
+cd $DEEPLAB
+./loss_from_log.py exper/voc12/log/DeepLab-LargeFOV/`ls -t exper/voc12/log/DeepLab-LargeFOV/ | head -n 1` # for the newest log
+#./loss_from_log.py exper/voc12/log/DeepLab-LargeFOV/$LOGNAME # specified log 
 ```
 
 ### Note 
