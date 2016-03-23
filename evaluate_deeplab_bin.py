@@ -79,7 +79,7 @@ def help(msg=''):
   print(msg +
         'Usage: python evaluate_deeplab_bin.py LIST_PATH GT_PATH RESULT_PATH\n'
         'LIST_PATH denotes path to text file with list of images for evaluating.\n'
-        'Gt_PATH denotes path to ground truth labels that will be used for evaluation.\n'
+        'GT_PATH denotes path to ground truth labels that will be used for evaluation.\n'
         'RESULT_PATH denotes path to segmentation results that will be evaluated.'
         , file=sys.stderr)
 

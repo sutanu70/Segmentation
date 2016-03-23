@@ -76,7 +76,7 @@ def load_binary_segmentation(bin_file, dtype='int16'):
     for i in range(num_values):
       out[i] = np.uint8(struct.unpack('h', bf.read(2))[0])
 
-    return out.reshape((rows, cols))
+    return np.rot90(np.fliplr(out.reshape((cols, rows))))
 
 def convert_from_color_segmentation(arr_3d):
   arr_2d = np.zeros((arr_3d.shape[0], arr_3d.shape[1]), dtype=np.uint8)
