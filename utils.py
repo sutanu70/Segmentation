@@ -13,6 +13,8 @@ def pascal_classes():
              'horse'     : 13, 'motorbike' : 14, 'person'      : 15, 'potted-plant' : 16,
              'sheep'     : 17, 'sofa'      : 18, 'train'       : 19, 'tv/monitor'   : 20}
 
+  return classes
+
 def pascal_palette():
   palette = {(  0,   0,   0) : 0 ,
              (128,   0,   0) : 1 ,
