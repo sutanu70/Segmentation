@@ -2,14 +2,16 @@
 
 CAFFE_BIN=code/.build_release/tools/caffe.bin
 EXP=exper/voc12
-NUM_LABELS=21
+NUM_LABELS=4 # 21
 DATA_ROOT=exper/voc12/data
 
 # Specify which model to train
 NET_ID=DeepLab-LargeFOV # Martin Kersner, 2016/03/10
 
-TRAIN_SET_SUFFIX=
-#TRAIN_SET_SUFFIX=_aug
+#LIST_SUFFIX=
+LIST_SUFFIX=_subset
+#TRAIN_SET_SUFFIX=
+TRAIN_SET_SUFFIX=_aug
 
 TRAIN_SET_STRONG=train
 #TRAIN_SET_STRONG=train200
@@ -44,7 +46,7 @@ export GLOG_log_dir=${LOG_DIR}
 
 # Training #1 (on train_aug)
 if [ ${RUN_TRAIN} -eq 1 ]; then
-  LIST_DIR=${EXP}/list
+  LIST_DIR=${EXP}/list${LIST_SUFFIX}
   TRAIN_SET=train${TRAIN_SET_SUFFIX}
 
   #if [ -z ${TRAIN_SET_WEAK_LEN} ]; then
@@ -77,7 +79,7 @@ fi
 # Test #1 specification (on val or test)
 if [ ${RUN_TEST} -eq 1 ]; then
   for TEST_SET in val; do
-	  TEST_ITER=`cat exper/voc12/list/${TEST_SET}.txt | wc -l`
+	  TEST_ITER=`cat exper/voc12/list${LIST_SUFFIX}/${TEST_SET}.txt | wc -l`
 	  MODEL=${EXP}/model/${NET_ID}/test.caffemodel
 
 	  if [ ! -f ${MODEL} ]; then
@@ -104,7 +106,7 @@ fi
 
 # Training #2 (finetune on trainval_aug)
 if [ ${RUN_TRAIN2} -eq 1 ]; then
-  LIST_DIR=${EXP}/list
+  LIST_DIR=${EXP}/list${LIST_SUFFIX}
   TRAIN_SET=trainval${TRAIN_SET_SUFFIX}
 
   #if [ -z ${TRAIN_SET_WEAK_LEN} ]; then
@@ -137,8 +139,9 @@ fi
 
 # Test #2 on official test set
 if [ ${RUN_TEST2} -eq 1 ]; then
-  for TEST_SET in val test; do
-	  TEST_ITER=`cat voc12/list/${TEST_SET}.txt | wc -l`
+  #for TEST_SET in val test; do # Martin Kersner, 2016/03/23
+  for TEST_SET in val; do
+	  TEST_ITER=`cat exper/voc12/list${LIST_SUFFIX}/${TEST_SET}.txt | wc -l`
 	  MODEL=${EXP}/model/${NET_ID}/test2.caffemodel
 
 	  if [ ! -f ${MODEL} ]; then
