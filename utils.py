@@ -63,6 +63,14 @@ def mat2png_hariharan(mat_file, key='GTcls'):
   mat = scipy.io.loadmat(mat_file, mat_dtype=True, squeeze_me=True, struct_as_record=False)
   return mat[key].Segmentation
 
+def convert_segmentation_mat2numpy(mat_file):
+  np_segm = load_mat(mat_file)
+  return np.rot90(np.fliplr(np.argmax(np_segm, axis=2)))
+
+def load_mat(mat_file, key='data'):
+  mat = scipy.io.loadmat(mat_file, mat_dtype=True, squeeze_me=True, struct_as_record=False)
+  return mat[key]
+
 # Python version of script in code/densecrf/my_script/LoadBinFile.m
 def load_binary_segmentation(bin_file, dtype='int16'):
   with open(bin_file, 'rb') as bf:
