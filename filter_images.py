@@ -15,10 +15,9 @@ def main():
   ## 
   ext = '.png'
   class_names = ['bird', 'bottle', 'chair']
-  subset_data_file = 'subset_data.txt'
   ## 
 
-  input_path, output_path, list_file = process_arguments(sys.argv)
+  input_path, output_path, list_file, subset_data_file = process_arguments(sys.argv)
 
   clear_subset_list_logs(subset_data_file)
   class_ids = get_id_classes(class_names)
@@ -58,20 +57,22 @@ def contain_class(img_name, class_ids, lut):
     return None
 
 def process_arguments(argv):
-  if len(argv) != 4:
+  if len(argv) != 5:
     help()
 
-  input_path  = argv[1]
-  output_path = argv[2]
-  list_file   = argv[3]
+  input_path       = argv[1]
+  output_path      = argv[2]
+  list_file        = argv[3]
+  subset_list_file = argv[4]
 
-  return input_path, output_path, list_file 
+  return input_path, output_path, list_file, subset_list_file
 
 def help():
-  print('Usage: python filter_images.py INPUT_PATH OUTPUT_PATH LIST_FILE\n'
+  print('Usage: python filter_images.py INPUT_PATH OUTPUT_PATH LIST_FILE SUBSET_LIST_FILE\n'
         'INPUT_PATH points to directory with segmentation ground truth labels.\n'
         'OUTPUT_PATH point to directory where reindexed ground truth labels are going to be stored.\n'
         'LIST_FILE denotes text file containing names of images in INPUT_PATH.\n'
+        'SUBSET_LIST_FILE denotes text file with remaining images that contain specified labels.\n'
         'Names do not include extension of images.'
         , file=sys.stderr)
 
