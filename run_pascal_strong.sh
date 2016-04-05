@@ -10,8 +10,8 @@ DATA_ROOT=exper/voc12/data
 GPU_ID=0
 
 # Specify number of classes
-NUM_LABELS=21         # all classes
-#NUM_LABELS=4         # 3 classes + 1 background
+#NUM_LABELS=21       # all classes
+NUM_LABELS=4         # 3 classes + 1 background
 
 #LIST_SUFFIX=         # all classes
 LIST_SUFFIX=_subset   # only for limited number of classes
