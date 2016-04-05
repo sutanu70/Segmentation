@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# Martin Kersner, 2016/03/18
+# Martin Kersner, m.kersner@gmail.com
+# 2016/03/18
 
 from __future__ import print_function
 caffe_root = 'code/'
@@ -15,25 +16,32 @@ from segmenter import Segmenter
 from ProgressBar import * 
 
 def main():
-  iteration_num = process_arguments(sys.argv)
+  iteration_num, phase, subset_dataset = process_arguments(sys.argv)
   model_name = 'DeepLab-LargeFOV'
   base_dir = 'exper/voc12'
   gpu_id = 2
 
-  net_path = 'deploy.prototxt'
-  model_path = base_dir + '/model/'+ model_name + '/train_iter_{}.caffemodel'
-  
-  #class_names = ['bird', 'bottle', 'chair']
-  #class_ids = get_id_classes(class_names)
+  if phase == 1:
+    model_path = os.path.join(base_dir, 'model', model_name, 'train_iter_{}.caffemodel')
+  elif phase == 2:
+    model_path = os.path.join(base_dir, 'model', model_name, 'train2_iter_{}.caffemodel')
 
-  class_ids = range(1,21)
+  if subset_dataset:
+    net_path = os.path.join(model_name, 'deploy4.prototxt')
+    class_names = ['bird', 'bottle', 'chair'] # CHANGE
+    class_ids = get_id_classes(class_names)
+    file_names = load_test_data(os.path.join(base_dir, 'list_subset/val_id.txt'))
+    images_path = os.path.join(base_dir, 'data/images_orig')
+    labels_path = os.path.join(base_dir, 'data/labels_sub_orig')
+  else:
+    net_path = os.path.join(model_name, 'deploy21.prototxt')
+    class_ids = range(1,21)
+    file_names = load_test_data(os.path.join(base_dir, 'list/val_id.txt'))
+    images_path = os.path.join(base_dir, 'data/images_orig')
+    labels_path = os.path.join(base_dir, 'data/labels_orig')
+
   lut = create_lut(class_ids)
-  
-  file_names = load_test_data(base_dir + '/list/val_id.txt')
-  images_path = base_dir + '/data/images_orig'
-  labels_path = base_dir + '/data/labels_orig'
   images, labels = create_full_paths(file_names, images_path, labels_path)
-  
   test_net(net_path, model_path.format(iteration_num), images, labels, lut, gpu_id)
 
 def load_test_data(file_name='test.txt'):
@@ -85,7 +93,7 @@ def test_net(net_path, model_path, images, labels, lut, gpu_id):
 
     segmentation = net.predict([im])
     pred = segmentation[0:cur_h, 0:cur_w]
-
+   
     pa = pixel_accuracy(pred, label)
     ma = mean_accuracy(pred, label)
     m_IU = mean_IU(pred, label)
@@ -104,16 +112,20 @@ def test_net(net_path, model_path, images, labels, lut, gpu_id):
   print("frequency_weighted: " + str(np.mean(fw_IU_list)))
 
 def process_arguments(argv):
-  if len(argv) != 2:
+  if len(argv) != 4 or (int(argv[2]) != 1 and int(argv[2]) != 2) or (int(argv[3]) != 0 and int(argv[3]) != 1):
     help()
-  else:
-    iteration_num = argv[1]
 
-  return iteration_num 
+  iteration_num  = argv[1]
+  phase          = int(argv[2])
+  subset_dataset = bool(int(argv[3]))
+
+  return iteration_num, phase, subset_dataset
 
 def help():
-  print('Usage: python test_model.py ITERATION_NUM\n'
-        'ITERATION_NUM denotes iteration number of model which shall be tested.'
+  print('Usage: python test_model.py ITERATION_NUM PHASE SUBSET_DATASET\n'
+        'ITERATION_NUM denotes iteration number of model which will be tested.'
+        'PHASE denotes training phase (either 1 or 2) that should be tested.\n'
+        'SUBSET_DATASET determines whether subset of whole dataset should be used (value 1) or whole dataset will be exploited (value 0).'
         , file=sys.stderr)
 
   exit()

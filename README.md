@@ -2,7 +2,7 @@
 
 Martin Kersner, <m.kersner@gmail.com>
 
-This repository contains scripts for training [DeepLab for Semantic Image Segmentation](https://bitbucket.org/deeplab/deeplab-public) using strongly and weakly annotated data.
+This repository contains scripts for training [DeepLab for Semantic Image Segmentation](https://bitbucket.org/deeplab/deeplab-public) using [strongly](https://github.com/martinkersner/train-DeepLab#strong-annotations) and weakly annotated data.
 [Semantic Image Segmentation with Deep Convolutional Nets and Fully Connected CRFs](http://arxiv.org/abs/1412.7062) and [Weakly- and Semi-Supervised Learning of a DCNN for Semantic Image Segmentation](http://arxiv.org/abs/1502.02734) papers describe training procedure using strongly and weakly annotated data, respectively.
 
 ```bash
@@ -42,7 +42,7 @@ make
 ```
 
 ## Strong annotations
-In this part of tutorial we train DCNN for semantic image segmentation using PASCAL VOC dataset with all 21 classes and also limited number of them.
+In this part of tutorial we train DCNN for semantic image segmentation using PASCAL VOC dataset with all 21 classes and also with limited number of them.
 As a training data we use only strong annotations (pixel level labels).
 
 ### Dataset
@@ -134,6 +134,7 @@ In order to easily switch between datasets we will modify image lists appropriat
 *run_pascal_strong.sh* can go through 4 different phases (twice training, twice testing), but I wouldn't recommend to run testing phases using this script.
 Actually, they are currently disabled.
 At [lines 27 through 30](https://github.com/martinkersner/train-DeepLab/blob/master/run_pascal_strong.sh#L27-L30), any of phases can be enabled (value 1) or disabled (value 0).
+
 Finally, we can start training.
 
 ```bash
@@ -155,7 +156,7 @@ cd $DEEPLAB
 
 ### Training with only 3 classes
 If we want to train with limited number of classes we have to modify ground truth labels and also list of images that can be exploited for training.
-In *filter_images.py* at [line 17](https://github.com/martinkersner/train-DeepLab/blob/master/filter_images.py#L17) are specified classes that we are interested in (defaultly bird, bottle, chair).
+In *filter_images.py* at [line 17](https://github.com/martinkersner/train-DeepLab/blob/master/filter_images.py#L17) are specified classes that we are interested in (defaultly bird, bottle and chair).
 
 ```bash
 # augmented PASCAL VOC 
@@ -175,7 +176,7 @@ python filter_images.py $DATASETS/VOC2012_orig/SegmentationClass_1D/ $DATASETS/V
 ./filter_lists.sh
 ```
 
-The number of classes that we plan to use is set at [lines 13 or 14](https://github.com/martinkersner/train-DeepLab/blob/master/run_pascal_strong.sh#L13-L14) in *run_pascal_strong.sh*.
+The number of classes that we plan to use is set at [lines 13 and 14](https://github.com/martinkersner/train-DeepLab/blob/master/run_pascal_strong.sh#L13-L14) in *run_pascal_strong.sh*.
 This number should be always higher by 1 than number of specified classes in *filter_images.py* script, because we also consider background as one of classes.
 
 After, we can proceed to training.
@@ -183,6 +184,16 @@ After, we can proceed to training.
 ```bash
 ./run_pascal_strong.sh
 ```
+
+We can also use the same script for [plotting training information](https://github.com/martinkersner/train-DeepLab#plotting-training-information).
+
+#### Evaluation
+|                       | phase 1 (24,000 iter., no CRF) | phase 2 (12,000 iter., no CRF) |
+|-----------------------|--------------------------------|--------------------------------|
+| pixel accuracy        |                         0.8315 |                         0.8523 |
+| mean accuracy         |                         0.6807 |                         0.6987 |
+| mean IU               |                         0.6725 |                         0.6937 |
+| frequency weighted IU |                         0.8182 |                         0.8439 |
 
 ## Note 
 Init models are modified VGG-16 networks with changed kernel size from 7x7 to 4x4 or 3x3.
