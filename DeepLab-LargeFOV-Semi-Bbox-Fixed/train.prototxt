@@ -25,7 +25,7 @@ layers {
   top: "label_strong"
   image_data_param {
     root_folder: "${DATA_ROOT}"
-    source: "${EXP}/list/${TRAIN_SET_STRONG}.txt"
+    source: "${EXP}/list${LIST_SUFFIX}/${TRAIN_SET_STRONG}.txt"
     batch_size: 15
     label_type: PIXEL
     shuffle: true
@@ -45,7 +45,7 @@ layers {
   top: "label_bbox"
   image_data_param {
     root_folder: "${DATA_ROOT}"
-    source: "${EXP}/list/${TRAIN_SET_WEAK_BBOX}.txt"
+    source: "${EXP}/list${LIST_SUFFIX}/${TRAIN_SET_WEAK_BBOX}.txt"
     batch_size: 15
     label_type: PIXEL
     shuffle: true
