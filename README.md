@@ -133,7 +133,7 @@ In order to easily switch between datasets we will modify image lists appropriat
 ### Training with all classes
 *run_pascal_strong.sh* can go through 4 different phases (twice training, twice testing), but I wouldn't recommend to run testing phases using this script.
 Actually, they are currently disabled.
-At [lines 27 through 30](https://github.com/martinkersner/train-DeepLab/blob/master/run_pascal_strong.sh#L27-L30), any of phases can be enabled (value 1) or disabled (value 0).
+At [lines 27 through 30](https://github.com/martinkersner/train-DeepLab/blob/master/run_pascal_strong.sh#L27-L30), any of phase can be enabled (value 1) or disabled (value 0).
 
 Finally, we can start training.
 
