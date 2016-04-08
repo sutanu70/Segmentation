@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Martin Kersner, m.kersner@gmail.com
+# 2016/04/08
+
+# fast_grep $1 $2
+# $1 pattern file
+# $2 input file
+
+PATTERN_FILE="$1"
+INPUT_FILE="$2"
+
+TMP_FILE=$(mktemp /tmp/fast_grep.XXXXXX)
+exec 3>"$TMP_FILE"
+rm "$TMP_FILE"
+
+cat "$INPUT_FILE" > "$TMP_FILE"
+
+NUM_LINE_INPUT=0
+while IFS='' read -r LINE || [[ -n "$LINE" ]]; do
+ GREP_OUT=`grep -n "$LINE" "$TMP_FILE"`
+
+ if [ "$GREP_OUT" ]; then
+   NUM_LINE_PAT=`grep -o "^[0-9]*" <<< "$GREP_OUT"`
+   MATCH=`grep -o "/.*$" <<< "$GREP_OUT"`
+   echo "$MATCH"
+
+   NUM_LINE_INPUT=$((NUM_LINE_PAT+NUM_LINE_INPUT))
+   tail -n +${NUM_LINE_INPUT} ${INPUT_FILE} > ${TMP_FILE}
+ fi
+done < "$PATTERN_FILE"
