@@ -3,14 +3,14 @@
 # Martin Kersner, m.kersner@gmail.com
 # 2016/04/08
 
-# fast_grep $1 $2
+# faster_grep $1 $2
 # $1 pattern file
 # $2 input file
 
 PATTERN_FILE="$1"
 INPUT_FILE="$2"
 
-TMP_FILE=$(mktemp /tmp/fast_grep.XXXXXX)
+TMP_FILE=$(mktemp /tmp/faster_grep.XXXXXX)
 exec 3>"$TMP_FILE"
 rm "$TMP_FILE"
 
