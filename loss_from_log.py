@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from utils import strstr
 
 def main():
-  log_files = process_arguments(sys.argv)
+  output_data, log_files = process_arguments(sys.argv)
 
   train_iteration = []
   train_loss      = []
@@ -74,14 +74,18 @@ def main():
           matched = match_net_accuracy_strong(line)
           train_accuracy5.append(float(matched.group(1)))
 
-  print('ITERATION', train_iteration)
-  print('LOSS',      train_loss)
-  print('ACCURACY0', train_accuracy0)
-  print('ACCURACY1', train_accuracy1)
-  print('ACCURACY2', train_accuracy2)
-  print('ACCURACY3', train_accuracy3)
-  print('ACCURACY4', train_accuracy4)
-  print('ACCURACY5', train_accuracy5)
+  
+  if output_data == 'loss':
+    for x in train_loss:
+      print(x)
+
+  if output_data == 'acc1':
+    for x,y,z in zip(train_accuracy0, train_accuracy1, train_accuracy2):
+      print(x, y, z)
+
+  if output_data == 'acc2':
+    for x,y,z in zip(train_accuracy3, train_accuracy4, train_accuracy5):
+      print(x, y, z)
 
   ## loss
   plt.plot(train_iteration, train_loss, 'k', label='Train loss')
@@ -125,15 +129,26 @@ def match_net_accuracy_strong(line):
 def process_arguments(argv):
   if len(argv) < 2:
     help()
+    
+  output_data = None
+  log_files = argv[2:]
 
-  log_files = argv[1:]
+  if argv[1].lower() == 'loss':
+    output_data = 'loss'
+  elif argv[1].lower() == 'acc1':
+    output_data = 'acc1'
+  elif argv[1].lower() == 'acc2':
+    output_data = 'acc2'
+  else:
+    log_files = argv[1:]
 
-  return log_files
+  return output_data, log_files
 
 def help():
-  print('Usage: python loss_from_log.py [weak|strong] [LOG_FILE]+\n'
-        'LOG_FILE is text file containing log produced by caffe.'
-        'At least one LOG_FILE has to be specified.'
+  print('Usage: python loss_from_log.py [OUTPUT_TYPE] [LOG_FILE]+\n'
+        'OUTPUT_TYPE can be either loss, acc1 or acc 2\n'
+        'LOG_FILE is text file containing log produced by caffe.\n'
+        'At least one LOG_FILE has to be specified.\n'
         'Files has to be given in correct order (the oldest logs as the first ones).'
         , file=sys.stderr)
 
