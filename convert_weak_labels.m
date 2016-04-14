@@ -2,11 +2,11 @@ clear all; close all;
 
 DATASETS = '' % SPECIFY YOUR PATH
 
-bbox_orig_folder = fullfile(DATASETS, 'VOC_augmented/dataset/SegClassBboxAug_RGB');
-bbox_save_folder = fullfile(DATASETS, 'VOC_augmented/dataset/SegClassBboxAug_1D');
+bbox_orig_folder = fullfile(DATASETS, 'VOC_aug/dataset/SegClassBboxAug_RGB');
+bbox_save_folder = fullfile(DATASETS, 'VOC_aug/dataset/SegClassBboxAug_1D');
 
-bboxcrf_orig_folder = fullfile(DATASETS, 'VOC_augmented/dataset/SegClassBboxErode20CRFAug_RGB');
-bboxcrf_save_folder = fullfile(DATASETS, 'VOC_augmented/dataset/SegClassBboxErode20CRFAug_1D');
+bboxcrf_orig_folder = fullfile(DATASETS, 'VOC_aug/dataset/SegClassBboxErode20CRFAug_RGB');
+bboxcrf_save_folder = fullfile(DATASETS, 'VOC_aug/dataset/SegClassBboxErode20CRFAug_1D');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
