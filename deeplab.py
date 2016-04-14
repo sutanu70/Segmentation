@@ -17,21 +17,25 @@ from utils import pascal_palette_invert, pascal_mean_values
 from segmenter import Segmenter
 
 def main():
-  gpu_id = 0
-  net_path, model_path, img_path = process_arguments(sys.argv)
+  gpu_id = 1
+  img_size = 500
 
+  net_path, model_path, img_paths = process_arguments(sys.argv)
   palette = pascal_palette_invert()
   net = Segmenter(net_path, model_path, gpu_id)
-  img, cur_h, cur_w = preprocess_image(img_path)
 
-  segm_result = net.predict([img])
-  segm_post = postprocess_segmentation(segm_result, cur_h, cur_w, palette)
-  
-  concatenate = True
-  save_result(segm_post, 'label.png', concatenate, img_path)
+  for img_path in img_paths:
+    img, cur_h, cur_w = preprocess_image(img_path, img_size)
+    segm_result = net.predict([img])
+    segm_post = postprocess_segmentation(segm_result, cur_h, cur_w, palette)
+    
+    concatenate = True
+    segm_name = os.path.basename(img_path).split('.')[0]+'-label.png'
+    save_result(segm_post, segm_name, concatenate, img_path)
 
-def preprocess_image(img_path):
+def preprocess_image(img_path, img_size):
   if not os.path.exists(img_path):
+    print(img_path)
     return None, 0, 0
 
   input_image = 255 * caffe.io.load_image(img_path)
@@ -46,8 +50,8 @@ def preprocess_image(img_path):
   
   # Pad as necessary
   cur_h, cur_w, cur_c = preprocess_img.shape
-  pad_h = 500 - cur_h
-  pad_w = 500 - cur_w
+  pad_h = img_size - cur_h
+  pad_w = img_size - cur_w
   preprocess_img = np.pad(preprocess_img, pad_width=((0, pad_h), (0, pad_w), (0, 0)), mode = 'constant', constant_values = 0)
 
   return preprocess_img, cur_h, cur_w
@@ -62,16 +66,16 @@ def postprocess_segmentation(segmentation, cur_h, cur_w, palette):
 def process_arguments(argv):
   net_path   = None
   model_path = None 
-  img_path   = None 
+  img_paths  = None 
 
-  if len(argv) == 3:
+  if len(argv) >= 4:
     net_path   = argv[1]
     model_path = argv[2]
-    img_path   = argv[3]
+    img_paths  = argv[3:]
   else:
     help()
 
-  return net_path, model_path, img_path
+  return net_path, model_path, img_paths
 
 def save_result(output_img, img_name, concatenate, input_img):
   if concatenate == False:
