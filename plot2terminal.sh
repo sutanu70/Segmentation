@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# Martin Kersnr, m.kersner@gmail.com
+# Martin Kersner, m.kersner@gmail.com
 # 2016/04/12
 
 COLS=`tput cols`
