@@ -18,9 +18,9 @@ LIST_SUFFIX=           # all classes
 
 
 # Specify which dataset use for training
-#TRAIN_SET_SUFFIX=         # original PASCAL VOC 2012 dataset
-#TRAIN_SET_SUFFIX=_aug     # augmented PASCAL VOC dataset
-TRAIN_SET_SUFFIX=_bbox     # weak labels consisting of only bounding boxes
+#TRAIN_SET_SUFFIX=          # original PASCAL VOC 2012 dataset
+#TRAIN_SET_SUFFIX=_aug      # augmented PASCAL VOC dataset
+TRAIN_SET_SUFFIX=_bbox      # weak labels consisting of only bounding boxes
 #TRAIN_SET_SUFFIX=_bboxcrf  # weak labels consisting of bounding boxes processed by DenseCRF
 
 #TRAIN_SET_STRONG=train
@@ -73,17 +73,16 @@ if [ ${RUN_TRAIN} -eq 1 ]; then
 
   if [ -z ${TRAIN_SET_WEAK_LEN} ]; then
 	  TRAIN_SET_WEAK_BBOX=${TRAIN_SET}_diff_${TRAIN_SET_STRONG}
-    cat ${LIST_DIR}/${TRAIN_SET_STRONG}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt
 
     comm -3 "$TMPFILE_WEAK" "$TMPFILE_STRONG" | sort > "$TMPFILE_CMP"
-    grep -f "$TMPFILE_CMP" ${LIST_DIR}/${TRAIN_SET}.txt >> ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt
+    ./faster_grep ${TMPFILE_CMP} ${LIST_DIR}/${TRAIN_SET}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt 
+    #grep -f "$TMPFILE_CMP" ${LIST_DIR}/${TRAIN_SET}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt
   else
 	  TRAIN_SET_WEAK_BBOX=${TRAIN_SET}_diff_${TRAIN_SET_STRONG}_head${TRAIN_SET_WEAK_LEN}
-    cat ${LIST_DIR}/${TRAIN_SET_STRONG}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt 
   
     comm -3 "$TMPFILE_WEAK" "$TMPFILE_STRONG" | head -n ${TRAIN_SET_WEAK_LEN} | sort > "$TMPFILE_CMP"
-    ./fast_grep ${TMPFILE_CMP} ${LIST_DIR}/${TRAIN_SET}.txt >> ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt 
-    #grep -f ${TMPFILE_CMP} ${LIST_DIR}/${TRAIN_SET}.txt >> ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt
+    ./faster_grep ${TMPFILE_CMP} ${LIST_DIR}/${TRAIN_SET}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt 
+    #grep -f ${TMPFILE_CMP} ${LIST_DIR}/${TRAIN_SET}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt
   fi
   
   MODEL=${EXP}/model/${NET_ID}/init.caffemodel
@@ -155,17 +154,16 @@ if [ ${RUN_TRAIN2} -eq 1 ]; then
 
   if [ -z ${TRAIN_SET_WEAK_LEN} ]; then
 	  TRAIN_SET_WEAK_BBOX=${TRAIN_SET}_diff_${TRAIN_SET_STRONG}
-    cat ${LIST_DIR}/${TRAIN_SET_STRONG}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt
 
     comm -3 "$TMPFILE_WEAK" "$TMPFILE_STRONG" | sort > "$TMPFILE_CMP"
-    grep -f "$TMPFILE_CMP" ${LIST_DIR}/${TRAIN_SET}.txt >> ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt
+    ./faster_grep ${TMPFILE_CMP} ${LIST_DIR}/${TRAIN_SET}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt 
+    #grep -f "$TMPFILE_CMP" ${LIST_DIR}/${TRAIN_SET}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt
   else
 	  TRAIN_SET_WEAK_BBOX=${TRAIN_SET}_diff_${TRAIN_SET_STRONG}_head${TRAIN_SET_WEAK_LEN}
-    cat ${LIST_DIR}/${TRAIN_SET_STRONG}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt 
   
     comm -3 "$TMPFILE_WEAK" "$TMPFILE_STRONG" | head -n ${TRAIN_SET_WEAK_LEN} | sort > "$TMPFILE_CMP"
-    ./fast_grep ${TMPFILE_CMP} ${LIST_DIR}/${TRAIN_SET}.txt >> ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt 
-    #grep -f ${TMPFILE_CMP} ${LIST_DIR}/${TRAIN_SET}.txt >> ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt
+    ./faster_grep ${TMPFILE_CMP} ${LIST_DIR}/${TRAIN_SET}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt 
+    #grep -f ${TMPFILE_CMP} ${LIST_DIR}/${TRAIN_SET}.txt > ${LIST_DIR}/${TRAIN_SET_WEAK_BBOX}.txt
   fi
 
   MODEL=${EXP}/model/${NET_ID}/init2.caffemodel
