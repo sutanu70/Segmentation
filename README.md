@@ -2,7 +2,7 @@
 
 Martin Kersner, <m.kersner@gmail.com>
 
-This repository contains scripts for training [DeepLab for Semantic Image Segmentation](https://bitbucket.org/deeplab/deeplab-public) using [strongly](https://github.com/martinkersner/train-DeepLab#strong-annotations) and [https://github.com/martinkersner/train-DeepLab#weak-annotations](weakly annotated data).
+This repository contains scripts for training [DeepLab for Semantic Image Segmentation](https://bitbucket.org/deeplab/deeplab-public) using [strongly](https://github.com/martinkersner/train-DeepLab#strong-annotations) and [weakly annotated data](https://github.com/martinkersner/train-DeepLab#weak-annotations).
 [Semantic Image Segmentation with Deep Convolutional Nets and Fully Connected CRFs](http://arxiv.org/abs/1412.7062) and [Weakly- and Semi-Supervised Learning of a DCNN for Semantic Image Segmentation](http://arxiv.org/abs/1502.02734) papers describe training procedure using strongly and weakly annotated data, respectively.
 
 ```bash
@@ -216,7 +216,7 @@ mv SegmentationClassBboxErode20CRFAug_Visualization/ SegClassBboxErode20CRFAug_R
 ```
 
 Downloaded weak annotations were created using Matlab and because of that labels are sometimes stored with one channel and other times with three channels.
-Similarly to [https://github.com/martinkersner/train-DeepLab#data-conversions](strong annotations) we have to convert all labels to the same one channel format.
+Similarly to [strong annotations](https://github.com/martinkersner/train-DeepLab#data-conversions) we have to convert all labels to the same one channel format.
 In order to cope with it I recommend you to use Matlab script *convert_weak_labels.m* (if anybody knows how to perform the same conversion using python I would be really interested) which is stored in $DEEPLAB directory.
 Before running script you have to specify path to datasets on line 3.
 
@@ -246,17 +246,18 @@ cp train_bbox.txt trainval_bbox.txt
 ```
 
 ### Training
-Training using weak annotations is similar to exploting [https://github.com/martinkersner/train-DeepLab#training-with-all-classes](strong annotations).
+Training using weak annotations is similar to exploiting [strong annotations](https://github.com/martinkersner/train-DeepLab#training-with-all-classes).
 The only difference is the name of script which should be run.
 
 ```bash
 ./run_pascal_weak.sh
 ```
 
-[https://github.com/martinkersner/train-DeepLab#plotting-training-information](Plotting) is also same as for strong annotations.
+[Plotting](https://github.com/martinkersner/train-DeepLab#plotting-training-information) is also same as for strong annotations.
 
 #### Evaluation
 5000 weak annotations and 200 strong annotations
+
 |                       | phase 1 (6,000 iter., no CRF) | phase 2 (8,000 iter., no CRF) |
 |-----------------------|--------------------------------|--------------------------------|
 | pixel accuracy        |                         0.8688 |                         0.8671 |
