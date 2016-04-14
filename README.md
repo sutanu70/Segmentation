@@ -2,7 +2,7 @@
 
 Martin Kersner, <m.kersner@gmail.com>
 
-This repository contains scripts for training [DeepLab for Semantic Image Segmentation](https://bitbucket.org/deeplab/deeplab-public) using [strongly](https://github.com/martinkersner/train-DeepLab#strong-annotations) and weakly annotated data.
+This repository contains scripts for training [DeepLab for Semantic Image Segmentation](https://bitbucket.org/deeplab/deeplab-public) using [strongly](https://github.com/martinkersner/train-DeepLab#strong-annotations) and [https://github.com/martinkersner/train-DeepLab#weak-annotations](weakly annotated data).
 [Semantic Image Segmentation with Deep Convolutional Nets and Fully Connected CRFs](http://arxiv.org/abs/1412.7062) and [Weakly- and Semi-Supervised Learning of a DCNN for Semantic Image Segmentation](http://arxiv.org/abs/1502.02734) papers describe training procedure using strongly and weakly annotated data, respectively.
 
 ```bash
@@ -13,6 +13,7 @@ In following tutorial we use couple of shell variables in order to reproduce the
 * *$DEEPLAB* denotes the main directory where repository is checked out
 * *$DATASETS* denotes path to directory where all necessary datasets are stored
 * *$LOGNAME* denotes name of log file stored in *$DEEPLAB/exper/voc12/log* directory
+* *$DOWNLOADS* denotes directory where downloaded files are stored
 
 ## Prerequisites
 * [matio](http://sourceforge.net/projects/matio/files/matio/1.5.2/)
@@ -72,14 +73,14 @@ cd $DEEPLAB
 ./mat2png.py $DATASETS/VOC_aug/dataset/cls $DATASETS/VOC_aug/dataset/cls_png
 ```
 
-Caffe softmax loss function can accept only one-dimensional ground truth labels. However, those labels in original PASCAL VOC 2012 dataset are defined as RGB images. Thus, we have to reduce their dimensionality.
+Caffe softmax loss function can accept only one-channel ground truth labels. However, those labels in original PASCAL VOC 2012 dataset are defined as RGB images. Thus, we have to reduce their dimensionality.
 
 ```bash
 cd $DATASETS/VOC2012_orig
 mkdir SegmentationClass_1D
 
 cd $DEEPLAB
-./convert_labels $DATASETS/VOC2012_orig/SegmentationClass/ \
+./convert_labels.py $DATASETS/VOC2012_orig/SegmentationClass/ \
   $DATASETS/VOC2012_orig/ImageSets/Segmentation/trainval.txt \
   $DATASETS/VOC2012_orig/SegmentationClass_1D/
 ```
@@ -194,6 +195,74 @@ We can also use the same script for [plotting training information](https://gith
 | mean accuracy         |                         0.6807 |                         0.6987 |
 | mean IU               |                         0.6725 |                         0.6937 |
 | frequency weighted IU |                         0.8182 |                         0.8439 |
+
+## Weak annotations
+In a case we don't possess enough training data, weakly annotated ground truth labels can be exploited using DeepLab.
+
+### Dataset
+At first you should download *SegmentationClassBboxRect_Visualization.zip* and *SegmentationClassBboxSeg_Visualization.zip* from link [https://ucla.app.box.com/s/laif889j7pk6dj04b0ou1apm2sgub9ga](https://ucla.app.box.com/s/laif889j7pk6dj04b0ou1apm2sgub9ga) and run commands below to prepare data for use.
+
+```bash
+cd $DOWNLOADS
+mv SegmentationClassBboxRect_Visualization.zip $DATASETS/VOC_aug/dataset/
+mv SegmentationClassBboxSeg_Visualization.zip $DATASETS/VOC_aug/dataset/
+
+cd $DATASETS/VOC_aug/dataset
+unzip SegmentationClassBboxRect_Visualization.zip
+unzip SegmentationClassBboxSeg_Visualization.zip
+
+mv SegmentationClassBboxAug_Visualization/ SegClassBboxAug_RGB
+mv SegmentationClassBboxErode20CRFAug_Visualization/ SegClassBboxErode20CRFAug_RGB
+```
+
+Downloaded weak annotations were created using Matlab and because of that labels are sometimes stored with one channel and other times with three channels.
+Similarly to [https://github.com/martinkersner/train-DeepLab#data-conversions](strong annotations) we have to convert all labels to the same one channel format.
+In order to cope with it I recommend you to use Matlab script *convert_weak_labels.m* (if anybody knows how to perform the same conversion using python I would be really interested) which is stored in $DEEPLAB directory.
+Before running script you have to specify path to datasets on line 3.
+
+After script successfully finished we have to create symbolic links to be able to reach data during training.
+```bash
+cd $DEEPLAB/exper/voc12/data
+ln -s $DATASETS/VOC_aug/dataset/SegClassBboxAug_1D/ labels_bbox
+ln -s $DATASETS/VOC_aug/dataset/SegClassBboxErode20CRFAug_1D/ labels_bboxcrf
+```
+
+#### Create subsets
+Training DeepLab using weak labels enables to employ datasets of different sizes.
+Following snippet creates those subsets of strong dataset and also necessary training lists with weak labels.
+
+```bash
+cd $DEEPLAB
+./create_weak_lists.sh
+
+cd $DEEPLAB/exper/voc12/list
+head -n 200  train.txt > train200.txt
+head -n 500  train.txt > train500.txt
+head -n 750  train.txt > train750.txt
+head -n 1000 train.txt > train1000.txt
+
+cp train_bboxcrf.txt trainval_bboxcrf.txt
+cp train_bbox.txt trainval_bbox.txt
+```
+
+### Training
+Training using weak annotations is similar to exploting [https://github.com/martinkersner/train-DeepLab#training-with-all-classes](strong annotations).
+The only difference is the name of script which should be run.
+
+```bash
+./run_pascal_weak.sh
+```
+
+[https://github.com/martinkersner/train-DeepLab#plotting-training-information](Plotting) is also same as for strong annotations.
+
+#### Evaluation
+5000 weak annotations and 200 strong annotations
+|                       | phase 1 (6,000 iter., no CRF) | phase 2 (8,000 iter., no CRF) |
+|-----------------------|--------------------------------|--------------------------------|
+| pixel accuracy        |                         0.8688 |                         0.8671 |
+| mean accuracy         |                         0.7415 |                          0.750 |
+| mean IU               |                         0.6324 |                         0.6343 |
+| frequency weighted IU |                         0.7962 |                         0.7951 |
 
 ## Note 
 Init models are modified VGG-16 networks with changed kernel size from 7x7 to 4x4 or 3x3.
