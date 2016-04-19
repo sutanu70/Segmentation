@@ -8,11 +8,20 @@
 #
 name: "DeepLab-LargeFOV"
 
-input: "data"
-input_dim: 10
-input_dim: 3
-input_dim: 500
-input_dim: 500
+layers {
+  name: "data"
+  type: MEMORY_DATA
+  top: "data"
+  top: "label"
+  top: "data_dim"
+
+  memory_data_param {
+    batch_size: 1
+    channels: 3
+    height: 505
+    width: 505
+  }
+}
 
 layers {
   bottom: "data"
@@ -393,58 +402,19 @@ layers {
   }
 }
 
-# Martin Kersner, 2016/03/18
-#layers {
-#  name: "fc8_mat"
-#  type: MAT_WRITE
-#  bottom: "fc8_interp"
-#  mat_write_param {
-#    prefix: "exper/voc12/features/DeepLab-LargeFOV/val/fc8/"
-#    source: "exper/voc12/list/val_id.txt"
-#    strip: 0
-#    period: 1
-#  }
-#  include: { phase: TEST }
-#}
-
-
-# JAY EDIT THIS LAYER
-#layers {
-#  bottom: "fc8_interp"
-#  bottom: "data_dim"
-#  bottom: "data"
-#  top: "crf_inf"
-#  name: "crf"
-#  type: DENSE_CRF
-#  dense_crf_param { 
-#    max_iter: 10
-#    pos_w: 3
-#    pos_xy_std: 3
-#    bi_w: 5
-#    bi_xy_std: 50
-#    bi_rgb_std: 10
-#  }
-#  include: { phase: TEST }
-#}
-
-#layers {
-#  name: "crf_mat"
-#  type: MAT_WRITE
-#  bottom: "crf_inf"
-#  mat_write_param {
-#    prefix: "exper/voc12/features/DeepLab-LargeFOV/val/crf/"
-#    source: "exper/voc12/list/val_id.txt"
-#    strip: 0
-#    period: 1
-#  }
-#  include: { phase: TEST }
-#}
-
-# Martin Kersner, 2016/03/18 
-#layers {
-#  bottom: "label"
-#  name: "silence"
-#  type: SILENCE
-#  include: { phase: TEST }
-#}
-
+layers {
+  bottom: "fc8_interp"
+  bottom: "data_dim"
+  bottom: "data"
+  top: "crf_inf"
+  name: "crf"
+  type: DENSE_CRF
+  dense_crf_param { 
+    max_iter: 10
+    pos_w: 3
+    pos_xy_std: 3
+    bi_w: 5
+    bi_xy_std: 50
+    bi_rgb_std: 10
+  }
+}

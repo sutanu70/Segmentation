@@ -17,7 +17,7 @@ from utils import pascal_palette_invert, pascal_mean_values
 from segmenter import Segmenter
 
 def main():
-  img_size = 500
+  img_size = 505
 
   gpu_id, net_path, model_path, img_paths = process_arguments(sys.argv)
   palette = pascal_palette_invert()

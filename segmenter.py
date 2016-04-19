@@ -24,25 +24,22 @@ class Segmenter(caffe.Net):
       self.set_device(gpu_id)
 
   def predict(self, inputs):
-    """
-    Assume that the input is a 500 x 500 image BRG layout with
-    correct padding as necessary to make it 500 x 500.
-    TODO arbitrary input
-    """
-      
-    input_ = np.zeros((len(inputs), 500, 500, inputs[0].shape[2]), dtype=np.float32)
+    # uses MEMORY_DATA layer for loading images and postprocessing DENSE_CRF layer
+    img = inputs[0].transpose((2, 0, 1))
+    img = img[np.newaxis, :].astype(np.float32)
+    label = np.zeros((1, 1, 1, 1), np.float32)
+    data_dim = np.zeros((1, 1, 1, 2), np.float32)
+    data_dim[0][0][0][0] = img.shape[2]
+    data_dim[0][0][0][1] = img.shape[3]
 
-    for ix, in_ in enumerate(inputs):
-      input_[ix] = in_
+    img      = np.ascontiguousarray(img, dtype=np.float32)
+    label    = np.ascontiguousarray(label, dtype=np.float32)
+    data_dim = np.ascontiguousarray(data_dim, dtype=np.float32)
 
-    # Segment
-    caffe_in = np.zeros(np.array(input_.shape)[[0,3,1,2]], dtype=np.float32)
-    for ix, in_ in enumerate(input_):
-      caffe_in[ix] = in_.transpose((2, 0, 1))
+    self.set_input_arrays(img, label, data_dim)
+    out = self.forward()
 
-    out = self.forward_all(**{self.inputs[0]: caffe_in})
-    predictions = out[self.outputs[0]]
-
+    predictions = out[self.outputs[0]] # the output layer should be called crf_inf
     segm_result = predictions[0].argmax(axis=0).astype(np.uint8)
 
     return segm_result 
