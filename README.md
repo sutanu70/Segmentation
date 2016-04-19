@@ -196,6 +196,16 @@ We can also use the same script for [plotting training information](https://gith
 | mean IU               |                         0.6725 |                         0.6937 |
 | frequency weighted IU |                         0.8182 |                         0.8439 |
 
+#### Visual results
+Displayed images (bird: 2010_004994, bottle: 2007_000346, chair: 2008_000673) are part of validation dataset stored in *$DEEPLAB/exper/voc12/list_subset/val.txt*.
+Colors of segments differ from original ground truth labels because employed model was trained only for 3 classes + background.
+
+<p align="center">
+<img src="http://i.imgur.com/n5PzvZU.png?1" />
+<img src="http://i.imgur.com/DCeUXes.png?1" />
+<img src="http://i.imgur.com/68KOfn4.png?1" />
+</p>
+
 ## Weak annotations
 In a case we don't possess enough training data, weakly annotated ground truth labels can be exploited using DeepLab.
 
