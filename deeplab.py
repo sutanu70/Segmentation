@@ -17,10 +17,9 @@ from utils import pascal_palette_invert, pascal_mean_values
 from segmenter import Segmenter
 
 def main():
-  gpu_id = 1
   img_size = 500
 
-  net_path, model_path, img_paths = process_arguments(sys.argv)
+  gpu_id, net_path, model_path, img_paths = process_arguments(sys.argv)
   palette = pascal_palette_invert()
   net = Segmenter(net_path, model_path, gpu_id)
 
@@ -64,18 +63,20 @@ def postprocess_segmentation(segmentation, cur_h, cur_w, palette):
   return postprocess_img
 
 def process_arguments(argv):
+  gpu_id     = None
   net_path   = None
   model_path = None 
   img_paths  = None 
 
-  if len(argv) >= 4:
-    net_path   = argv[1]
-    model_path = argv[2]
-    img_paths  = argv[3:]
+  if len(argv) >= 5:
+    gpu_id     = int(argv[1])
+    net_path   = argv[2]
+    model_path = argv[3]
+    img_paths  = argv[4:]
   else:
     help()
 
-  return net_path, model_path, img_paths
+  return gpu_id, net_path, model_path, img_paths
 
 def save_result(output_img, img_name, concatenate, input_img):
   if concatenate == False:
