@@ -16,10 +16,8 @@ from segmenter import Segmenter
 from ProgressBar import * 
 
 def main():
-  iteration_num, phase, subset_dataset = process_arguments(sys.argv)
-  model_name = 'DeepLab-LargeFOV'
   base_dir = 'exper/voc12'
-  gpu_id = 2
+  gpu_id, model_name, iteration_num, phase, subset_dataset = process_arguments(sys.argv)
 
   if phase == 1:
     model_path = os.path.join(base_dir, 'model', model_name, 'train_iter_{}.caffemodel')
@@ -62,7 +60,7 @@ def create_full_paths(file_names, image_dir, label_dir, image_ext='.jpg', label_
 
   return image_paths, label_paths
 
-def preprocess_image(file_name, mean_vec, height=500, width=500):
+def preprocess_image(file_name, mean_vec, height=505, width=505):
   image = imread(file_name).astype(np.float32)
   im = image[:,:,::-1]
   im = im - mean_vec
@@ -112,18 +110,22 @@ def test_net(net_path, model_path, images, labels, lut, gpu_id):
   print("frequency_weighted: " + str(np.mean(fw_IU_list)))
 
 def process_arguments(argv):
-  if len(argv) != 4 or (int(argv[2]) != 1 and int(argv[2]) != 2) or (int(argv[3]) != 0 and int(argv[3]) != 1):
+  if len(argv) != 6 or (int(argv[4]) != 1 and int(argv[4]) != 2) or (int(argv[5]) != 0 and int(argv[5]) != 1):
     help()
 
-  iteration_num  = argv[1]
-  phase          = int(argv[2])
-  subset_dataset = bool(int(argv[3]))
+  gpu_id         = int(argv[1])
+  model_name     = argv[2]
+  iteration_num  = argv[3]
+  phase          = int(argv[4])
+  subset_dataset = bool(int(argv[5]))
 
-  return iteration_num, phase, subset_dataset
+  return gpu_id, model_name, iteration_num, phase, subset_dataset
 
 def help():
-  print('Usage: python test_model.py ITERATION_NUM PHASE SUBSET_DATASET\n'
-        'ITERATION_NUM denotes iteration number of model which will be tested.'
+  print('Usage: python test_model.py GPU_ID MODE_NAME ITERATION_NUM PHASE SUBSET_DATASET\n'
+        'GPU_ID denotes gpu ID that should be employed for test.\n'
+        'MODEL_NAME denotes name of model that should be tested (e.g. DeepLab-LargeFOV or DeepLab-LargeFOV-Semi-Bbox-Fixed).\n'
+        'ITERATION_NUM denotes iteration number of model which will be tested.\n'
         'PHASE denotes training phase (either 1 or 2) that should be tested.\n'
         'SUBSET_DATASET determines whether subset of whole dataset should be used (value 1) or whole dataset will be exploited (value 0).'
         , file=sys.stderr)
