@@ -197,6 +197,7 @@ We can also use the same script for [plotting training information](https://gith
 | frequency weighted IU |                         0.8182 |                         0.8439 |
 
 #### Visual results
+Employed model was trained without CRF in phase 1 (24,000 iterations) and then in phase 2 (12,000 iterations), but results here exploited DENSE_CRF layer.
 Displayed images (bird: 2010_004994, bottle: 2007_000346, chair: 2008_000673) are part of validation dataset stored in *$DEEPLAB/exper/voc12/list_subset/val.txt*.
 Colors of segments differ from original ground truth labels because employed model was trained only for 3 classes + background.
 
