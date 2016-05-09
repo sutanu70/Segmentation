@@ -127,7 +127,7 @@ def match_net_accuracy_strong(line):
   return re.search(r'accuracy_strong = (.*)', line)
 
 def process_arguments(argv):
-  if len(argv) < 2:
+  if len(argv) < 3:
     help()
     
   output_data = None
@@ -145,7 +145,7 @@ def process_arguments(argv):
   return output_data, log_files
 
 def help():
-  print('Usage: python loss_from_log.py [OUTPUT_TYPE] [LOG_FILE]+\n'
+  print('Usage: python loss_from_log.py OUTPUT_TYPE [LOG_FILE]+\n'
         'OUTPUT_TYPE can be either loss, acc1 or acc 2\n'
         'LOG_FILE is text file containing log produced by caffe.\n'
         'At least one LOG_FILE has to be specified.\n'
